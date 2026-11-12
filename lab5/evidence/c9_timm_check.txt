@@ -1,0 +1,16 @@
+Terminal output of c9_timm_check.py, run by Ashraf on his laptop on 2026-11-12 (copied from PowerShell).
+Note: run with the global Python 3.13 install, not a virtual environment.
+
+PS D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5> & C:/Users/ashra/AppData/Local/Programs/Python/Python313/python.exe "d:/Masters/UNIBZ/Semester 3/Quality/Labs/Lab 5/c9_timm_check.py"
+date: 2026-11-12T14:15:12
+os: Windows-11-10.0.26300-SP0
+python: 3.13.1 | executable: C:\Users\ashra\AppData\Local\Programs\Python\Python313\python.exe
+torch: 2.11.0+cpu | timm: 1.0.31
+cuda available: False
+models in timm: 1371
+[cpu] resnet18 pretrained=False: output shape (2, 1000), forward 39.6 ms
+[cuda] skipped: no CUDA-enabled torch or no GPU visible
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+model.safetensors: downloading bytes: 44.0MB, 3.99MB/s
+model.safetensors: reconstructing file: 100% 46.8MB / 46.8MB, 4.38MB/s
+[cpu] resnet18 pretrained=True: output shape (2, 1000), forward 40.4 ms

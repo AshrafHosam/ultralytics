@@ -1,0 +1,28 @@
+date: 2026-11-12T14:26:08
+os: Windows-11-10.0.26300-SP0
+python: 3.13.1 | executable: D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\.venv\Scripts\python.exe
+Creating new Ultralytics Settings v0.0.8 file  
+View Ultralytics Settings with 'yolo settings' or at 'C:\Users\ashra\AppData\Roaming\Ultralytics\settings.json'
+Update Settings with 'yolo settings key=value', i.e. 'yolo settings runs_dir=path/to/dir'. For help see https://docs.ultralytics.com/usage/settings
+torch: 2.15.0+cu132 | ultralytics: 8.4.211
+cuda available: True
+device: 0
+datasets_dir: D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets
+Downloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.pt to 'yolo26n.pt': 5% ╸─────────── 280.0KB/5.3MB 2.7MB/s 0.1s<1.9sDownloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.pt to 'yolo26n.pt': 25% ━━━───────── 1.4/5.3MB 10.6MB/s 0.2s<0.4sDownloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.pt to 'yolo26n.pt': 50% ━━━━━━────── 2.7/5.3MB 12.9MB/s 0.3s<0.2sDownloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.pt to 'yolo26n.pt': 78% ━━━━━━━━━─── 4.2/5.3MB 14.3MB/s 0.4s<0.1sDownloading https://github.com/ultralytics/assets/releases/download/v8.4.0/yolo26n.pt to 'yolo26n.pt': 100% ━━━━━━━━━━━━ 5.3MB 11.1MB/s 0.5s
+predict bus.jpg: 5 boxes: ['bus', 'person', 'person', 'person', 'person']
+Ultralytics 8.4.211  Python-3.13.1 torch-2.15.0+cu132 CUDA:0 (NVIDIA GeForce RTX 3060 Laptop GPU, 6144MiB)
+YOLO26n summary (fused): 120 layers, 2,408,932 parameters, 0 gradients, 5.5 GFLOPs
+
+WARNING Dataset 'coco8.yaml' images not found, missing path 'D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8\images\val'
+Downloading https://ultralytics.com/assets/coco8.zip to 'D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8.zip': 85% ━━━━━━━━━━── 368.0/432.8KB 3.6MB/s 0.1s<0.0sDownloading https://ultralytics.com/assets/coco8.zip to 'D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8.zip': 100% ━━━━━━━━━━━━ 432.8KB 4.0MB/s 0.1s
+Unzipping D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8.zip to D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8...: 100% ━━━━━━━━━━━━ 25/25 1.1Kfiles/s 0.0s
+Dataset download success  (0.9s), saved to D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets
+
+Downloading https://ultralytics.com/assets/Arial.ttf to 'C:\Users\ashra\AppData\Roaming\Ultralytics\Arial.ttf': 40% ━━━━╸─────── 304.0/755.1KB 2.9MB/s 0.1s<0.2sDownloading https://ultralytics.com/assets/Arial.ttf to 'C:\Users\ashra\AppData\Roaming\Ultralytics\Arial.ttf': 100% ━━━━━━━━━━━━ 755.1KB 5.7MB/s 0.1s
+WARNING val: Slow image access detected (ping: 0.1±0.0 ms, read: 9.3±6.9 MB/s, size: 54.0 KB). Use local storage instead of remote/mounted storage for better performance. See https://docs.ultralytics.com/guides/model-training-tips
+val: Scanning D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8\labels\val... 4 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 4/4 535.4it/s 0.0s
+val: New cache created: D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8\labels\val.cache
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 1/1 6.0it/s 0.2s
+                   all          4         17      0.552      0.961      0.943      0.669
+Speed: 0.8ms preprocess, 12.3ms inference, 0.0ms loss, 3.2ms postprocess per image
+val coco8: mAP50=0.943  mAP50-95=0.669

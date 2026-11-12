@@ -1,0 +1,17 @@
+date: 2026-11-12T14:43:50
+os: Windows-11-10.0.26300-SP0
+python: 3.13.1 | executable: D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\.venv\Scripts\python.exe
+torch: 2.15.0+cu132 | ultralytics: 8.4.211
+ultralytics imported from: D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\ultralytics\ultralytics
+cuda available: True
+device: 0
+datasets_dir: D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets
+predict bus.jpg: 5 boxes: ['bus', 'person', 'person', 'person', 'person']
+Ultralytics 8.4.211  Python-3.13.1 torch-2.15.0+cu132 CUDA:0 (NVIDIA GeForce RTX 3060 Laptop GPU, 6144MiB)
+YOLO26n summary (fused): 120 layers, 2,408,932 parameters, 0 gradients, 5.5 GFLOPs
+val: Fast image access  (ping: 0.1±0.0 ms, read: 123.6±55.9 MB/s, size: 54.0 KB)
+val: Scanning D:\Masters\UNIBZ\Semester 3\Quality\Labs\Lab 5\yolo_check\datasets\coco8\labels\val.cache... 4 images, 0 backgrounds, 0 corrupt: 100% ━━━━━━━━━━━━ 4/4 1.1Mit/s 0.0s
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 1/1 5.9it/s 0.2s
+                   all          4         17      0.552      0.961      0.943      0.669
+Speed: 0.8ms preprocess, 16.1ms inference, 0.0ms loss, 4.0ms postprocess per image
+val coco8: mAP50=0.943  mAP50-95=0.669

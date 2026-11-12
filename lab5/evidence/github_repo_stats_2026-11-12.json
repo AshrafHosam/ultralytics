@@ -1,0 +1,32 @@
+{
+ "timm": {
+  "forks": 5227,
+  "stars": 37282,
+  "open_issues_and_prs": 22,
+  "created": "2019-02-02",
+  "commits_default_branch": 3393,
+  "contributors_incl_anon": 222,
+  "tags_first_page": 81,
+  "truncated_tree": false
+ },
+ "smp": {
+  "forks": 1853,
+  "stars": 11805,
+  "open_issues_and_prs": 91,
+  "created": "2019-03-01",
+  "commits_default_branch": 898,
+  "contributors_incl_anon": 79,
+  "tags_first_page": 17,
+  "truncated_tree": false
+ },
+ "yolo": {
+  "forks": 11982,
+  "stars": 63323,
+  "open_issues_and_prs": 74,
+  "created": "2022-09-11",
+  "commits_default_branch": 5796,
+  "contributors_incl_anon": 494,
+  "tags_first_page": 100,
+  "truncated_tree": false
+ }
+}
