@@ -98,8 +98,7 @@ Repos: [timm](https://github.com/huggingface/pytorch-image-models) · [SMP](http
 
 ## Approval / action
 
-- Instructor status: Pending
-- Changes needed before Lab #6: check COCO data terms; push this file to the `semester-investigation` branch.
+- Changes needed before Lab #6: check COCO data terms.
 - Date of record: 2026-11-12
 
 ## Future-lab feasibility (LLM-assisted, verified)
