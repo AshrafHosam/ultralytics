@@ -1,0 +1,42 @@
+# Copy to .github/workflows/lab6-duplication.yml in YOUR GitHub fork.
+# This analyzes source on GitHub-hosted infrastructure, not on your laptop.
+# Review inherited workflows before enabling Actions on a fork.
+name: Lab6 - Duplication
+
+on:
+  push:
+    branches:
+      - semester-investigation
+      - 'lab6-*'
+
+permissions:
+  contents: read
+  security-events: write  # for optional GitHub code-scanning SARIF upload
+
+jobs:
+  duplication:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the exact pushed revision
+        uses: actions/checkout@v4
+
+      - name: Analyze duplication and publish SARIF
+        uses: kucherenko/jscpd@v5
+        with:
+          version: '5.3.2'
+          # Lab 6 scope: only the handwritten Python package (same scope as the Ruff workflow).
+          path: 'ultralytics'
+          format: 'python'
+          reporters: console,json,sarif
+          # Exclude generated/vendor/test directories if relevant to the SUT.
+          # Document exclusions in LAB6_ANALYSIS.md.
+          ignore: '**/node_modules/**,**/.venv/**,**/generated/**,**/build/**,**/dist/**'
+
+      - name: Keep a downloadable copy of the report (time-limited)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab6-duplication-report
+          path: report/
+          if-no-files-found: warn
+          retention-days: 30
