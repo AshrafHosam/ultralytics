@@ -395,6 +395,93 @@ def get_cfg(
     return IterableSimpleNamespace(**cfg)
 
 
+def _to_float(k: str, v: Any, hard: bool) -> int | float:
+    """Return a numeric config value, converting it to float if needed.
+
+    Args:
+        k (str): Configuration key name.
+        v (Any): Configuration value.
+        hard (bool): If True, raise TypeError for non-numeric values; if False, convert them to float.
+
+    Returns:
+        (int | float): The value unchanged if it is an int or float, otherwise `float(v)`.
+
+    Raises:
+        TypeError: If `v` is not an int or float and `hard` is True.
+    """
+    if isinstance(v, FLOAT_OR_INT):
+        return v
+    if hard:
+        raise TypeError(
+            f"'{k}={v}' is of invalid type {type(v).__name__}. "
+            f"Valid '{k}' types are int (i.e. '{k}=0') or float (i.e. '{k}=0.5')"
+        )
+    return float(v)
+
+
+def _check_scale(cfg: dict, k: str, v: Any, hard: bool) -> None:
+    """Validate the `scale` argument, a number in [0.0, 1.0] or a tuple/list of two numbers, updating `cfg` in-place.
+
+    Args:
+        cfg (dict): Configuration dictionary to update.
+        k (str): Configuration key name.
+        v (Any): Configuration value, not None.
+        hard (bool): If True, raise exceptions for invalid types; if False, attempt to convert them.
+
+    Raises:
+        TypeError: If `v` has an invalid type and `hard` is True.
+        ValueError: If a numeric `v` is outside [0.0, 1.0].
+    """
+    if isinstance(v, (list, tuple)):
+        if len(v) != 2 or not all(isinstance(x, (int, float)) for x in v):
+            if hard:
+                raise TypeError(
+                    f"'{k}={v}' is of invalid type {type(v).__name__}. "
+                    f"Valid '{k}' types are int, float, or a tuple/list of two floats (i.e. '{k}=(0.5, 2.0)')"
+                )
+            return
+        return
+    elif not isinstance(v, FLOAT_OR_INT):
+        cfg[k] = v = _to_float(k, v, hard)
+    if not (0.0 <= v <= 1.0):
+        raise ValueError(f"'{k}={v}' is an invalid value. Valid '{k}' values are between 0.0 and 1.0.")
+
+
+def _check_fraction(cfg: dict, k: str, v: Any, hard: bool) -> None:
+    """Validate a fraction argument in [0.0, 1.0], or a dataset `fraction` count/list, updating `cfg` in-place.
+
+    Args:
+        cfg (dict): Configuration dictionary to update.
+        k (str): Configuration key name, one of `CFG_FRACTION_KEYS`.
+        v (Any): Configuration value, not None.
+        hard (bool): If True, raise exceptions for invalid types; if False, attempt to convert them.
+
+    Raises:
+        TypeError: If `fraction` is a bool, or `v` has an invalid type and `hard` is True.
+        ValueError: If `v` is outside its valid range or is an invalid `fraction` list.
+    """
+    if k == "fraction" and isinstance(v, list):
+        if (
+            len(v) not in {2, 3}
+            or not all(v[:2])
+            or not all((type(x) is int and x >= 0) or (type(x) is float and 0.0 <= x <= 1.0) for x in v)
+        ):
+            raise ValueError(f"'{k}={v}' is invalid. Use [train, val] or [train, val, test] counts/ratios.")
+        cfg[k] = [float(x) if x in {0, 1} else x for x in v]
+        return
+    if k == "fraction" and isinstance(v, bool):
+        raise TypeError(f"'{k}={v}' is of invalid type bool. Valid '{k}' types are int, float, or list")
+    if not isinstance(v, FLOAT_OR_INT):
+        cfg[k] = v = _to_float(k, v, hard)
+    if k == "fraction":
+        if not (0.0 < v <= 1.0 or (isinstance(v, int) and v > 1)):
+            raise ValueError(f"'{k}={v}' invalid. Use integer count >1 or ratio (0, 1] for fraction.")
+        if v == 1:
+            cfg[k] = 1.0
+    elif not (0.0 <= v <= 1.0):
+        raise ValueError(f"'{k}={v}' is an invalid value. Valid '{k}' values are between 0.0 and 1.0.")
+
+
 def check_cfg(cfg: dict, hard: bool = True) -> None:
     """Check configuration argument types and values for the Ultralytics library.
 
@@ -439,57 +526,11 @@ def check_cfg(cfg: dict, hard: bool = True) -> None:
             raise TypeError(f"'{k}=None' is invalid. '{k}' must not be None.")
         if v is not None:  # None values may be from optional args
             if k in CFG_FLOAT_KEYS and not isinstance(v, FLOAT_OR_INT):
-                if hard:
-                    raise TypeError(
-                        f"'{k}={v}' is of invalid type {type(v).__name__}. "
-                        f"Valid '{k}' types are int (i.e. '{k}=0') or float (i.e. '{k}=0.5')"
-                    )
-                cfg[k] = float(v)
+                cfg[k] = _to_float(k, v, hard)
             elif k == "scale":
-                if isinstance(v, (list, tuple)):
-                    if len(v) != 2 or not all(isinstance(x, (int, float)) for x in v):
-                        if hard:
-                            raise TypeError(
-                                f"'{k}={v}' is of invalid type {type(v).__name__}. "
-                                f"Valid '{k}' types are int, float, or a tuple/list of two floats (i.e. '{k}=(0.5, 2.0)')"
-                            )
-                        continue
-                    continue
-                elif not isinstance(v, FLOAT_OR_INT):
-                    if hard:
-                        raise TypeError(
-                            f"'{k}={v}' is of invalid type {type(v).__name__}. "
-                            f"Valid '{k}' types are int (i.e. '{k}=0') or float (i.e. '{k}=0.5')"
-                        )
-                    cfg[k] = v = float(v)
-                if not (0.0 <= v <= 1.0):
-                    raise ValueError(f"'{k}={v}' is an invalid value. Valid '{k}' values are between 0.0 and 1.0.")
+                _check_scale(cfg, k, v, hard)
             elif k in CFG_FRACTION_KEYS:
-                if k == "fraction" and isinstance(v, list):
-                    if (
-                        len(v) not in {2, 3}
-                        or not all(v[:2])
-                        or not all((type(x) is int and x >= 0) or (type(x) is float and 0.0 <= x <= 1.0) for x in v)
-                    ):
-                        raise ValueError(f"'{k}={v}' is invalid. Use [train, val] or [train, val, test] counts/ratios.")
-                    cfg[k] = [float(x) if x in {0, 1} else x for x in v]
-                    continue
-                if k == "fraction" and isinstance(v, bool):
-                    raise TypeError(f"'{k}={v}' is of invalid type bool. Valid '{k}' types are int, float, or list")
-                if not isinstance(v, FLOAT_OR_INT):
-                    if hard:
-                        raise TypeError(
-                            f"'{k}={v}' is of invalid type {type(v).__name__}. "
-                            f"Valid '{k}' types are int (i.e. '{k}=0') or float (i.e. '{k}=0.5')"
-                        )
-                    cfg[k] = v = float(v)
-                if k == "fraction":
-                    if not (0.0 < v <= 1.0 or (isinstance(v, int) and v > 1)):
-                        raise ValueError(f"'{k}={v}' invalid. Use integer count >1 or ratio (0, 1] for fraction.")
-                    if v == 1:
-                        cfg[k] = 1.0
-                elif not (0.0 <= v <= 1.0):
-                    raise ValueError(f"'{k}={v}' is an invalid value. Valid '{k}' values are between 0.0 and 1.0.")
+                _check_fraction(cfg, k, v, hard)
             elif k in CFG_INT_KEYS:
                 if not isinstance(v, int):
                     if hard and not (isinstance(v, float) and v.is_integer()):  # integral floats, i.e. 'epochs=1e2'
