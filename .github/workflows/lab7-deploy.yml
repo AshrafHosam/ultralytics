@@ -13,6 +13,7 @@ permissions:
 jobs:
   deploy-and-verify:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20  # safety limit for the load experiment
     steps:
       - name: Check out this exact commit
         uses: actions/checkout@v4

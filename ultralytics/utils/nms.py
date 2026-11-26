@@ -68,6 +68,14 @@ def non_max_suppression(
     if classes is not None:
         classes = torch.tensor(classes, device=prediction.device)
 
+    # Lab 7 load experiment (side branch only, not a real feature): deliberate extra memory and CPU work,
+    # to check that the workflow's CPU and memory measurement can detect a real cost change.
+    _extra_memory = torch.ones(64_000_000)  # about 256 MB
+    _extra_cpu = torch.ones(2000, 2000)
+    for _ in range(3):
+        _extra_cpu = _extra_cpu @ _extra_cpu / 2000  # stays all ones, only costs CPU time
+    del _extra_memory, _extra_cpu
+
     if prediction.shape[-1] == 6 or end2end:  # end-to-end model (BNC, i.e. 1,300,6)
         output, keepi = [], []
         for pred in prediction:
