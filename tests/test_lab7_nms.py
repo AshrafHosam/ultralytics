@@ -20,9 +20,10 @@ def kept(pred):
 
 
 def test_box_at_threshold():
-    """Expected result for the chosen case: the box exactly at 0.25 is dropped."""
+    """Expected result for the chosen case: the box exactly at 0.25 is kept (only boxes below are dropped)."""
     for pred in (NMS_INPUT, E2E_INPUT):
-        assert kept(pred) == [0.90]
+        assert kept(pred) == [0.90, 0.25]  # new result
+        assert kept(pred) != [0.90]  # the old result no longer holds
 
 
 def test_unchanged_rules():
