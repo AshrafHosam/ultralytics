@@ -37,7 +37,8 @@ def non_max_suppression(
             num_boxes) containing xywh boxes, class scores, and optional extra channels (mask coefficients, keypoints,
             or angle), or end-to-end predictions with shape (batch_size, num_boxes, 6 + num_extra). For a list or tuple,
             the first element is used.
-        conf_thres (float): Confidence threshold for filtering detections. Valid values are between 0.0 and 1.0.
+        conf_thres (float): Minimum confidence to keep a detection; boxes below it are dropped. Valid values are between
+            0.0 and 1.0.
         iou_thres (float): IoU threshold for NMS filtering. Valid values are between 0.0 and 1.0.
         classes (list[int], optional): List of class indices to consider. If None, all classes are considered.
         agnostic (bool): Whether to perform class-agnostic NMS.
@@ -70,7 +71,7 @@ def non_max_suppression(
     if prediction.shape[-1] == 6 or end2end:  # end-to-end model (BNC, i.e. 1,300,6)
         output, keepi = [], []
         for pred in prediction:
-            mask = pred[:, 4] > conf_thres
+            mask = pred[:, 4] >= conf_thres
             if classes is not None:
                 mask &= (pred[:, 5:6] == classes).any(1)
             idx = mask.nonzero(as_tuple=False).view(-1)[:max_det]
@@ -82,7 +83,7 @@ def non_max_suppression(
     nc = nc or (prediction.shape[1] - 4)  # number of classes
     extra = prediction.shape[1] - nc - 4  # number of extra info
     mi = 4 + nc  # mask start index
-    xc = prediction[:, 4:mi].amax(1) > conf_thres  # candidates
+    xc = prediction[:, 4:mi].amax(1) >= conf_thres  # candidates
     xinds = torch.arange(prediction.shape[-1], device=prediction.device).expand(bs, -1)[..., None]  # to track idxs
 
     # Settings
@@ -113,13 +114,13 @@ def non_max_suppression(
         box, cls, mask = x.split((4, nc, extra), 1)
 
         if multi_label:
-            i, j = torch.where(cls > conf_thres)
+            i, j = torch.where(cls >= conf_thres)
             x = torch.cat((box[i], x[i, 4 + j, None], j[:, None].float(), mask[i]), 1)
             if return_idxs:
                 xk = xk[i]
         else:  # best class only
             conf, j = cls.max(1, keepdim=True)
-            filt = conf.view(-1) > conf_thres
+            filt = conf.view(-1) >= conf_thres
             x = torch.cat((box, conf, j.float(), mask), 1)[filt]
             if return_idxs:
                 xk = xk[filt]
