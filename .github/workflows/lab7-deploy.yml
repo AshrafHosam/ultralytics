@@ -39,3 +39,16 @@ jobs:
 
       - name: Run the case and the checks
         run: python -m pytest -v -s tests/test_lab7_nms.py tests/test_python.py::test_nms_end2end_classes_before_max_det
+
+      - name: Measure CPU and memory (baseline b64bae8 vs this commit, same machine)
+        run: |
+          echo "CPU cores: $(nproc)"
+          free -m | head -2
+          BASE=b64bae8182a903fee4fa67e44a0d0d4765453a7a
+          git fetch --quiet --depth=1 origin $BASE
+          for i in 1 2 3; do
+            git show $BASE:ultralytics/utils/nms.py > ultralytics/utils/nms.py
+            python lab7/measure_nms.py "baseline ${BASE:0:7}, round $i"
+            git checkout -- ultralytics/utils/nms.py
+            python lab7/measure_nms.py "this commit ${GITHUB_SHA:0:7}, round $i"
+          done
